@@ -27,12 +27,13 @@ CreateThread(function()
     while true do
         local wait = 1800
         for i=1, #kontit do
-           local coords = GetEntityCoords(PlayerPedId())
-           local konttipos = kontit[i].coords
-           if Vdist(coords.x, coords.y, coords.z, konttipos.x, konttipos.y, konttipos.z) < 35.0 then
-            wait = 0
-            DrawMarker(25, konttipos.x, konttipos.y, konttipos.z, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 1.0, 1.0, 77, 0, 0, 150, false, true, 5, nil, nil, false)
-                if Vdist(coords.x, coords.y, coords.z, konttipos.x, konttipos.y, konttipos.z) < 1.2 then
+            local coords = GetEntityCoords(PlayerPedId())
+            local konttipos = kontit[i].coords
+            local dist = #(coords - konttipos)
+            if dist < 35.0 then
+                wait = 0
+                DrawMarker(25, konttipos.x, konttipos.y, konttipos.z, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 1.0, 1.0, 77, 0, 0, 150, false, true, 5, nil, nil, false)
+                if dist < 1.2 then
                     if not alotettu then
                         ESX.ShowHelpNotification("Paina ~INPUT_CONTEXT~ ronklataksesi konttia!")
                         if IsControlJustReleased(0, 38) then
@@ -50,8 +51,8 @@ CreateThread(function()
                             ESX.ShowAdvancedNotification('Konttiryöstö', 'Murto keskeytyi!', "", "CHAR_CALL911", 1)
                         end
                     end
-                end
-            end  
+                end  
+            end
         end
         Wait(wait)
     end
