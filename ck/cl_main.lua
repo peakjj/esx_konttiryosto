@@ -26,32 +26,33 @@ CreateThread(function()
     end
     while true do
         local wait = 1800
-        for i=1, #kontit do
-           local coords = GetEntityCoords(PlayerPedId())
-           local konttipos = kontit[i].coords
-           if Vdist(coords.x, coords.y, coords.z, konttipos.x, konttipos.y, konttipos.z) < 35.0 then
-            wait = 0
-            DrawMarker(25, konttipos.x, konttipos.y, konttipos.z, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 1.0, 1.0, 77, 0, 0, 150, false, true, 5, nil, nil, false)
-                if Vdist(coords.x, coords.y, coords.z, konttipos.x, konttipos.y, konttipos.z) < 1.2 then
-                    if not alotettu then
-                        ESX.ShowHelpNotification("Paina ~INPUT_CONTEXT~ ronklataksesi konttia!")
-                        if IsControlJustReleased(0, 38) then
-                            if GetSelectedPedWeapon(PlayerPedId()) == GetHashKey("WEAPON_CROWBAR") then
-                                ronklausalotuslmfaokarpovelhokod(i)
-                            else
-                                ESX.ShowNotification("Tarvitset sorkkaraudan!")
-                            end
-                        end
-                    else
-                        if IsPedDeadOrDying(PlayerPedId(), true) then
-                            ClearPedTasks(PlayerPedId())
-                            alotettu = false
-                            TriggerServerEvent('karpo_konttiryosto:keskeytetty')
-                            ESX.ShowAdvancedNotification('Konttiryöstö', 'Murto keskeytyi!', "", "CHAR_CALL911", 1)
-                        end
-                    end
-                end
-            end  
+        local playerPed = PlayerPedId()
+        local coords = GetEntityCoords(playerPed)
+        for _,v in pairs(kontit) do
+            local konttipos = v.coords
+            if #(coords - konttipos) < 35.0 then
+             wait = 0
+             DrawMarker(25, konttipos.x, konttipos.y, konttipos.z, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 1.0, 1.0, 77, 0, 0, 150, false, true, 5, nil, nil, false)
+                 if #(coords - konttipos) < 1.2 then
+                     if not alotettu then
+                         ESX.ShowHelpNotification("Paina ~INPUT_CONTEXT~ ronklataksesi konttia!")
+                         if IsControlJustReleased(0, 38) then
+                             if GetSelectedPedWeapon(playerPed) == GetHashKey("WEAPON_CROWBAR") then
+                                 ronklausalotuslmfaokarpovelhokod(i)
+                             else
+                                 ESX.ShowNotification("Tarvitset sorkkaraudan!")
+                             end
+                         end
+                     else
+                         if IsPedDeadOrDying(playerPed, true) then
+                             ClearPedTasks(playerPed)
+                             alotettu = false
+                             TriggerServerEvent('karpo_konttiryosto:keskeytetty')
+                             ESX.ShowAdvancedNotification('Konttiryöstö', 'Murto keskeytyi!', "", "CHAR_CALL911", 1)
+                         end
+                     end
+                 end
+             end  
         end
         Wait(wait)
     end
